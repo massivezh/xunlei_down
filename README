@@ -1,0 +1,32 @@
+Chinese utf8
+这个是用来做迅雷离线下载的perl脚本。
+
+主要功能：
+getlist.pl用来从离线下载上获取下载清单，写入数据库。
+d2.pl则是根据数据库中的信息下载文件。
+
+验证：
+getlist.pl使用用户名和密码通过验证，在此过程中生成lwp格式的cookie：lwp_cookies.dat。
+最后将cookie以netscape格式保存在cookies.txt里供d2.pl使用。
+
+细节：
+./getlist.pl [数字]
+数字是离线下载中的页面数量，如果不写这个参数，默认只取第一页
+
+d2.pl调用wget下载，并用cookies.txt做验证。
+下载的暂存目录是./unfin
+下载完的目录是./done
+每次启动会检测是否有实例已经在运行，并会创建/var/lock/download作为锁文件。
+
+数据库的表结构：
+
+Create Table: CREATE TABLE `info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `filename` varchar(255) NOT NULL,
+  `url` text NOT NULL,
+  `stat` enum('yes','no') NOT NULL DEFAULT 'no',
+  `size` varchar(255) NOT NULL,
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `filename` (`filename`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8 COLLATE utf8_bin
+
